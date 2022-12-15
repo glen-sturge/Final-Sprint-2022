@@ -139,15 +139,21 @@ def choice_3():
 
 def choice_4():
     print("Track Car Rentals.\n")
+
+    f = open("Employees.dat", "r")
+    for data in f:
+        Dataline = data.split(",")
+        DriverNumList = Dataline[0].strip()
+
     # User Inputs
-    while True:
-        DriverNum = input("Enter your driver number: ")
-        if DriverNum == "":
-            print("Driver number cannot be left blank.")
-        elif DriverNum.isnumeric() is False:
-            print("Driver number must be a numerical value.")
-        else:
+    DriverNum = input("Please enter your driver number: ")
+    f = open("Employees.dat", "r")
+    for data in f:
+        Dataline = data.split(",")
+        if Dataline[0].strip() == DriverNum:
+            Name = f"{Dataline[1]}, {Dataline[2]}"
             break
+
     while True:
         RentalStartDate = input("Enter the rental start date: (YYYY-MM-DD) ")
         if RentalStartDate == "":
