@@ -7,7 +7,6 @@ import globals
 
 globals.init_defaults()
 
-
 # Main Script
 def main():
     while True:

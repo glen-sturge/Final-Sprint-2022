@@ -139,8 +139,69 @@ def choice_3():
 
 def choice_4():
     print("Track Car Rentals.\n")
-    hold_screen = input("Press Enter To Continue...")
+    # User Inputs
+    while True:
+        DriverNum = input("Enter your driver number: ")
+        if DriverNum == "":
+            print("Driver number cannot be left blank.")
+        elif DriverNum.isnumeric() is False:
+            print("Driver number must be a numerical value.")
+        else:
+            break
+    while True:
+        RentalStartDate = input("Enter the rental start date: (YYYY-MM-DD) ")
+        if RentalStartDate == "":
+            print("The rental start date cannot be left blank.")
+        elif len(RentalStartDate) != 10:
+            print("Please enter the rental start date in the proper format.")
+        else:
+            break
+    while True:
+        try:
+            CarNum = int(input("Enter the car number: "))
+        except:
+            print("Please enter a valid number.")
+        else:
+            if CarNum > 4 or CarNum < 1:
+                print("The car number must be between 1 and 4.")
+            else:
+                break
+    while True:
+        try:
+            RentalLength = int(input("Enter the rental length: (Day(1), Week(7) or enter a number of days) "))
+        except:
+            print("Please enter a valid number.")
+        else:
+            break
 
+    # Calculations
+    print()
+    RentalCost = RentalLength * globals.DAILY_RENTAL_FEE
+    print("Rental Cost:", ff.f_dol_com_2d(RentalCost))
+    HST = RentalCost * globals.HST_RATE
+    print("HST:", ff.f_dol_com_2d(HST))
+    Total = RentalCost + HST
+    print("Total:", ff.f_dol_com_2d(Total))
+    print()
+
+    # Add data to Rentals File
+    f = open("Rentals.dat", "a")
+
+    f.write("{}, ".format(globals.RENTAL_ID))
+    f.write("{}, ".format(DriverNum))
+    f.write("{}, ".format(RentalStartDate))
+    f.write("{}, ".format(CarNum))
+    f.write("{}, ".format(RentalLength))
+    f.write("{}, ".format(RentalCost))
+    f.write("{}, ".format(HST))
+    f.write("{}\n".format(Total))
+
+    f.close()
+
+    print("Rental information saved.")
+
+    globals.RENTAL_ID += 1
+    hold_screen = input("Press Enter To Continue...")
 
 def choice_5():
     print("Record Employee Payment.\n")
