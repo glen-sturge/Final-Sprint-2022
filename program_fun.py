@@ -144,6 +144,74 @@ def choice_4():
 
 def choice_5():
     print("Record Employee Payment.\n")
+    # Imports
+    import datetime
+
+    # Variables
+    End = "Y"
+    today = datetime.datetime.now()
+
+    f = open("Employees.dat", "r")
+    for data in f:
+        Dataline = data.split(",")
+        DriverNumList = Dataline[0].strip()
+
+
+    # Inputs
+    while End == "Y":
+        DriverNum = input("Please enter your driver number: ")
+        f = open("Employees.dat", "r")
+        for data in f:
+            Dataline = data.split(",")
+            if Dataline[0].strip() == DriverNum:
+                Name = f"{Dataline[1]}, {Dataline[2]}"
+                break
+
+
+        PaymentAmount = input("Please enter the payment amount: ")
+        PaymentReason = input("Please enter the payment reason: ")
+        PaymentMethod = input("Please enter the payment method (D - debit, C - cash, V - visa): ").upper()
+
+        # Receipt if card or visa is chosen
+        if PaymentMethod == "D" or PaymentMethod == "V":
+
+            CardNum = input("Please enter your card number: ")
+
+            if len(CardNum) == 16:
+                print("=============================================================================")
+                print(f"Driver Number: {DriverNum}                    Payment Information ")
+                print(f"Name: {Name}                           Payment Reason: {PaymentReason}")
+                print(f"Date: {today.strftime('%Y-%m-%d')}                       Payment Method: {PaymentMethod}")
+                print(f"                                       Payment Amount: {PaymentAmount}")
+                print(f"                                       Card Number: {CardNum}")
+                print("=============================================================================")
+        else:
+            CardNum = "Cash Payment Used"
+            print("=============================================================================")
+            print(f"Driver Number: {DriverNum}                    Payment Information ")
+            print(f"Name: {Name}                           Payment Reason: {PaymentReason}")
+            print(f"Date: {today.strftime('%Y-%m-%d')}                       Payment Method: {PaymentMethod}")
+            print(f"                                       Payment Amount: {PaymentAmount}")
+            print("=============================================================================")
+
+        f = open("EmployeePaymentRecords.dat", "a")
+        f.write("{}, ".format(globals.PAYMENT_ID))
+        f.write("{}, ".format(DriverNum))
+        f.write("{}, ".format(PaymentAmount))
+        f.write("{}, ".format(PaymentReason))
+        f.write("{}, ".format(PaymentMethod))
+        f.write("{}, ".format(CardNum))
+        f.write("{}\n ".format(today.strftime('%Y-%m-%d')))
+
+        globals.PAYMENT_ID += 1
+
+        # End of loop statement
+        End = input(
+            "Would you like the end the program or enter another payment record (Y - Enter another, N - End program): ").upper()
+
+        if End == "N":
+            print("Payment details recorded!")
+        break
     hold_screen = input("Press Enter To Continue...")
 
 
