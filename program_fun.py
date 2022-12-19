@@ -139,79 +139,78 @@ def choice_3():
 
 def choice_4():
     print("Track Car Rentals.\n")
-    hold_screen = input("Press Enter To Continue...")
-
-
-def choice_5():
-    print("Record Employee Payment.\n")
-    # Imports
-    import datetime
-
-    # Variables
-    End = "Y"
-    today = datetime.datetime.now()
 
     f = open("Employees.dat", "r")
     for data in f:
         Dataline = data.split(",")
         DriverNumList = Dataline[0].strip()
 
+    # User Inputs
+    DriverNum = input("Please enter your driver number: ")
+    f = open("Employees.dat", "r")
+    for data in f:
+        Dataline = data.split(",")
+        if Dataline[0].strip() == DriverNum:
+            Name = f"{Dataline[1]}, {Dataline[2]}"
+            break
 
-    # Inputs
-    while End == "Y":
-        DriverNum = input("Please enter your driver number: ")
-        f = open("Employees.dat", "r")
-        for data in f:
-            Dataline = data.split(",")
-            if Dataline[0].strip() == DriverNum:
-                Name = f"{Dataline[1]}, {Dataline[2]}"
-                break
-
-
-        PaymentAmount = input("Please enter the payment amount: ")
-        PaymentReason = input("Please enter the payment reason: ")
-        PaymentMethod = input("Please enter the payment method (D - debit, C - cash, V - visa): ").upper()
-
-        # Receipt if card or visa is chosen
-        if PaymentMethod == "D" or PaymentMethod == "V":
-
-            CardNum = input("Please enter your card number: ")
-
-            if len(CardNum) == 16:
-                print("=============================================================================")
-                print(f"Driver Number: {DriverNum}                    Payment Information ")
-                print(f"Name: {Name}                           Payment Reason: {PaymentReason}")
-                print(f"Date: {today.strftime('%Y-%m-%d')}                       Payment Method: {PaymentMethod}")
-                print(f"                                       Payment Amount: {PaymentAmount}")
-                print(f"                                       Card Number: {CardNum}")
-                print("=============================================================================")
+    while True:
+        RentalStartDate = input("Enter the rental start date: (YYYY-MM-DD) ")
+        if RentalStartDate == "":
+            print("The rental start date cannot be left blank.")
+        elif len(RentalStartDate) != 10:
+            print("Please enter the rental start date in the proper format.")
         else:
-            CardNum = "Cash Payment Used"
-            print("=============================================================================")
-            print(f"Driver Number: {DriverNum}                    Payment Information ")
-            print(f"Name: {Name}                           Payment Reason: {PaymentReason}")
-            print(f"Date: {today.strftime('%Y-%m-%d')}                       Payment Method: {PaymentMethod}")
-            print(f"                                       Payment Amount: {PaymentAmount}")
-            print("=============================================================================")
+            break
+    while True:
+        try:
+            CarNum = int(input("Enter the car number: "))
+        except:
+            print("Please enter a valid number.")
+        else:
+            if CarNum > 4 or CarNum < 1:
+                print("The car number must be between 1 and 4.")
+            else:
+                break
+    while True:
+        try:
+            RentalLength = int(input("Enter the rental length: (Day(1), Week(7) or enter a number of days) "))
+        except:
+            print("Please enter a valid number.")
+        else:
+            break
 
-        f = open("EmployeePaymentRecords.dat", "a")
-        f.write("{}, ".format(globals.PAYMENT_ID))
-        f.write("{}, ".format(DriverNum))
-        f.write("{}, ".format(PaymentAmount))
-        f.write("{}, ".format(PaymentReason))
-        f.write("{}, ".format(PaymentMethod))
-        f.write("{}, ".format(CardNum))
-        f.write("{}\n ".format(today.strftime('%Y-%m-%d')))
+    # Calculations
+    print()
+    RentalCost = RentalLength * globals.DAILY_RENTAL_FEE
+    print("Rental Cost:", ff.f_dol_com_2d(RentalCost))
+    HST = RentalCost * globals.HST_RATE
+    print("HST:", ff.f_dol_com_2d(HST))
+    Total = RentalCost + HST
+    print("Total:", ff.f_dol_com_2d(Total))
+    print()
 
-        globals.PAYMENT_ID += 1
+    # Add data to Rentals File
+    f = open("Rentals.dat", "a")
 
-        # End of loop statement
-        End = input(
-            "Would you like the end the program or enter another payment record (Y - Enter another, N - End program): ").upper()
+    f.write("{}, ".format(globals.RENTAL_ID))
+    f.write("{}, ".format(DriverNum))
+    f.write("{}, ".format(RentalStartDate))
+    f.write("{}, ".format(CarNum))
+    f.write("{}, ".format(RentalLength))
+    f.write("{}, ".format(RentalCost))
+    f.write("{}, ".format(HST))
+    f.write("{}\n".format(Total))
 
-        if End == "N":
-            print("Payment details recorded!")
-        break
+    f.close()
+
+    print("Rental information saved.")
+
+    globals.RENTAL_ID += 1
+    hold_screen = input("Press Enter To Continue...")
+
+def choice_5():
+    print("Record Employee Payment.\n")
     hold_screen = input("Press Enter To Continue...")
 
 
@@ -222,6 +221,46 @@ def choice_6():
 
 def choice_7():
     print("Print Driver Financial Listing.\n")
+
+    driverNumInput = input("Enter your driver number: ")
+    startDateStr = input("Enter the start date of listings you would like to print: (YYYY-MM-DD) ")
+    startDate = datetime.datetime.strptime(startDateStr, "%Y-%m-%d")
+    endDateStr = input("Enter the end date of listings you would like to print: (YYYY-MM-DD) ")
+    endDate = datetime.datetime.strptime(endDateStr, "%Y-%m-%d")
+
+    print()
+    print("HAB TAXI SERVICES")
+    print("DRIVER FINANCIAL LISTING FROM", startDateStr, "to", endDateStr)
+    print()
+    print("DRIVER   TRANS    TRANS         TRANS")
+    print("NUMBER   ID       DATE          DESCRIPTION   SUBTOTAL   HST     TOTAL")
+    print("=======================================================================")
+
+    f = open("Revenue.dat", "r")
+    GrandSubtotal = 0
+    TotalHST = 0
+    GrandTotal = 0
+    for data in f:
+        Dataline = data.split(",")
+        DriverNum = Dataline[3].strip()
+        TransID = Dataline[0].strip()
+        TransDateStr = Dataline[1].strip()
+        TransDate = datetime.datetime.strptime(TransDateStr, "%Y-%m-%d")
+        TransDescrip = Dataline[2].strip()
+        Subtotal = float(Dataline[4].strip())
+        HST = float(Dataline[5].strip())
+        Total = float(Dataline[6].strip())
+        if TransDate >= startDate and TransDate <= endDate:
+            if driverNumInput == DriverNum:
+                print(DriverNum,"   ", TransID,"     ", TransDateStr,"   ", TransDescrip,"    ", ff.f_dol_com_2d(Subtotal),"   ", ff.f_dol_com_2d(HST)," ", ff.f_dol_com_2d(Total))
+                GrandSubtotal += float(Subtotal)
+                TotalHST += float(HST)
+                GrandTotal += float(Total)
+    print("=======================================================================")
+    print(f"TOTAL BEFORE TAXES: {ff.f_dol_com_2d(GrandSubtotal):>8s}")
+    print(f"HST:                {ff.f_dol_com_2d(TotalHST):>8s}")
+    print(f"TOTAL AFTER TAXES:  {ff.f_dol_com_2d(GrandTotal):>8s}")
+
     hold_screen = input("Press Enter To Continue...")
 
 
