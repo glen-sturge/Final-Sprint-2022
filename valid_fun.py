@@ -47,9 +47,9 @@ def check_yes(user_input: str):
 
 
 def check_date_std(user_input: str):
-    #
-    #
-    #
+    # Takes in date as str.
+    # Returns True if format is "YYYY-MM-DD"
+    # Prints Error Message and returns False otherwise.
     try:
         check_date = dt.strptime(user_input, "%Y-%m-%d")
     except ValueError:
